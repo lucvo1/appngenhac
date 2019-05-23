@@ -10,10 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.appngenhac.Database.database;
 import com.example.appngenhac.R;
 import com.example.appngenhac.TrangChu.TrangChuActivity;
 
 public class LoginActivity extends AppCompatActivity {
+    database db;
     EditText edtuser,edtpass;
     Button  btnDangnhap,btnDangky;
     String ten, mk;
@@ -21,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
+        db = new database(this);
         Anhxa();
         btnDangky.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,8 +41,23 @@ public class LoginActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         ten = edttk.getText().toString().trim();
                         mk = edtmk.getText().toString().trim();
-                        edtuser.setText(ten);
-                        edtpass.setText(mk);
+                        //edtuser.setText(ten);
+                        //edtpass.setText(mk);
+                        if(ten.equals("")|| mk.equals("")){
+                            Toast.makeText(getApplicationContext(),"không được để trống",Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Boolean chkacc = db.chkacc(ten);
+                            if(chkacc=true){
+                                Boolean insert = db.insert(ten,mk);
+                                if(insert=true){
+                                    Toast.makeText(getApplicationContext(),"đăng ký thành công",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            else{
+                                Toast.makeText(getApplicationContext(),"tài khoản tồn tại",Toast.LENGTH_SHORT).show();
+                            }
+                        }
                         dialog.cancel();
                     }
                 });
@@ -55,7 +73,17 @@ public class LoginActivity extends AppCompatActivity {
         btnDangnhap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               if(edtuser.getText().length() !=0 && edtpass.getText().length() !=0){
+                String account = edtuser.getText().toString();
+                String password = edtpass.getText().toString();
+                Boolean check = db.check(account,password);
+                if(check==true){
+                    Toast.makeText(getApplicationContext(),"đăng nhập thành công",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this,TrangChuActivity.class);
+                    startActivity(intent);
+                }
+                else
+                    Toast.makeText(LoginActivity.this, "Bạn đã đăng nhập thất bại",Toast.LENGTH_SHORT).show();
+               /*if(edtuser.getText().length() !=0 && edtpass.getText().length() !=0){
                    if (edtuser.getText().toString().equals(ten) && edtpass.getText().toString().equals(mk)) {
                        Toast.makeText(LoginActivity.this, "Bạn đã đăng nhập thành công",Toast.LENGTH_SHORT).show();
                        Intent intent = new Intent(LoginActivity.this,TrangChuActivity.class);
@@ -70,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                    }
                } else {
                    Toast.makeText(LoginActivity.this, "Mời bạn nhập đủ thông tin",Toast.LENGTH_SHORT).show();
-               }
+               }*/
             }
         });
 }

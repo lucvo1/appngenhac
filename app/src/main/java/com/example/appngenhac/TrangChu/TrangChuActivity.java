@@ -27,7 +27,6 @@ public class TrangChuActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.trangchu_layout);
-
         btnProfile = (Button)findViewById(R.id.button);
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
